@@ -11,8 +11,9 @@ import {
   MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef,
   MatTable
 } from "@angular/material/table";
-import {MatButton} from "@angular/material/button";
+import {MatButton, MatFabButton} from "@angular/material/button";
 import {RouterLink} from "@angular/router";
+import {MatIcon} from "@angular/material/icon";
 
 @Component({
   selector: 'app-employee-list',
@@ -29,14 +30,16 @@ import {RouterLink} from "@angular/router";
     MatRowDef,
     MatHeaderRowDef,
     MatButton,
-    RouterLink
+    RouterLink,
+    MatIcon,
+    MatFabButton
   ],
   templateUrl: './employee-list.component.html',
   styleUrl: './employee-list.component.css'
 })
 export class EmployeeListComponent implements OnInit {
 
-  dataSource:Employee[]=[];
+  dataSource: Employee[] = [];
 
 
   displayedColumns: string[] = [
@@ -46,7 +49,8 @@ export class EmployeeListComponent implements OnInit {
     'employeeAddress',
     'employeeGender',
     'employeeDepartment',
-    'employeeSkills'
+    'employeeSkills',
+    'delete'
   ];
 
   constructor(private employeeService: EmployeeService) {
@@ -61,12 +65,27 @@ export class EmployeeListComponent implements OnInit {
     this.employeeService.getEmployees().subscribe({
       next: (res: Employee[]) => {
         console.log(res);
-        this.dataSource=res;
+        this.dataSource = res;
       },
       error: (err: HttpErrorResponse) => {
         console.log(err);
       }
     })
   }
+
+
+  deleteEmployee(employeeId: number): void {
+    console.log(employeeId);
+    this.employeeService.deleteEmployee(employeeId).subscribe({
+      next:(res)=>{
+        console.log(res);
+        this.getEmployeeList();
+      },
+      error:(err:HttpErrorResponse)=>{
+        console.log(err);
+      }
+    })
+  }
+
 
 }
